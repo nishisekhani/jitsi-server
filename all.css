@@ -4698,8 +4698,8 @@ body.welcome-page {
   height: 100%;
 }
 .welcome .welcome-watermark .watermark.leftwatermark {
-  width: 71px;
-  height: 32px;
+  width: 310px;
+  height: 52px;
 }
 .welcome.without-content .welcome-card {
   min-width: 500px;
