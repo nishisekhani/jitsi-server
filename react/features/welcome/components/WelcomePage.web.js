@@ -62,6 +62,10 @@ class WelcomePage extends AbstractWelcomePage {
         this._additionalContentRef = null;
 
         this._roomInputRef = null;
+        const { DEFAULT_WELCOME_PAGE_LOGO_URL, DISPLAY_WELCOME_FOOTER } = interfaceConfig;
+        // const { DEFAULT_WELCOME_PAGE_LOGO_URL, DISPLAY_WELCOME_FOOTER } = interfaceConfig;
+        // const { DEFAULT_WELCOME_PAGE_LOGO_URL, DISPLAY_WELCOME_FOOTER } = interfaceConfig;
+        // const { DEFAULT_WELCOME_PAGE_LOGO_URL, DISPLAY_WELCOME_FOOTER } = interfaceConfig;
 
         /**
          * The HTML Element used as the container for additional toolbar content. Used
@@ -116,7 +120,7 @@ class WelcomePage extends AbstractWelcomePage {
         this._onTabSelected = this._onTabSelected.bind(this);
         this._renderFooter = this._renderFooter.bind(this);
     }
-
+     
     /**
      * Implements React's {@link Component#componentDidMount()}. Invoked
      * immediately after this component is mounted.
@@ -200,9 +204,9 @@ class WelcomePage extends AbstractWelcomePage {
                     </div>
                     <div className = 'header-image' />
                     <div className = 'header-container'>
-                        <h1 className = 'header-text-title'>
+                        {/* <h1 className = 'header-text-title'>
                             { t('welcomepage.headerTitle') }
-                        </h1>
+                        </h1> */}
                         <span className = 'header-text-subtitle'>
                             { t('welcomepage.headerSubtitle')}
                         </span>
@@ -251,14 +255,55 @@ class WelcomePage extends AbstractWelcomePage {
                                     }
                                 </p>
                             </div>)}
+                        {/* <div class="based-on-title">Based on Jitsi opensource technology</div>
+                        <div class="counter">
+                            <div class="square">
+                                <div class="content">
+                                    <div class="count">0</div>
+                                    <div class="display-text">Current Conferences</div>
+                                </div>
+                            </div>
+                            <div class="square">
+                                <div class="content numbers">
+                                    <div class="count">0</div>
+                                    <div class="display-text">Current Participants</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="count-timestamp">Sun Jun 20 23:19:28 2021</div> */}
                     </div>
                 </div>
 
                 <div className = 'welcome-cards-container'>
                     <div className = 'welcome-card-row'>
+                    <div class="based-on-title">Based on Jitsi opensource technology</div>
+                        <div class="counter">
+                            <div class="square">
+                                <div class="content">
+                                    <div class="count">0</div>
+                                    <div class="display-text">Current Conferences</div>
+                                </div>
+                            </div>
+                            <div class="square">
+                                <div class="content numbers">
+                                    <div class="count">0</div>
+                                    <div class="display-text">Current Participants</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="count-timestamp">Sun Jun 20 23:19:28 2021</div>
+                        {/* <div className = 'welcome-tabs welcome-card welcome-card--blue'>
+                            { this._renderTabs() }
+                            <div className="meetings-list">
+                                <span className="title">Your recent list is currently empty. chat with your team and you will fing all your recent meetings here.</span>
+                            </div>
+                        </div>
                         <div className = 'welcome-tabs welcome-card welcome-card--blue'>
                             { this._renderTabs() }
-                        </div>
+                            <div className="meetings-list">
+                                <span className="title">Your recent list is currently empty. chat with your team and you will fing all your recent meetings here.</span>
+                            </div>
+                        </div> */}
                         { showAdditionalCard
                             ? <div
                                 className = 'welcome-card welcome-card--dark'
@@ -348,11 +393,23 @@ class WelcomePage extends AbstractWelcomePage {
             MOBILE_DOWNLOAD_LINK_IOS
         } = interfaceConfig;
 
+        const switchShowClass = () => {
+            // document.getElementById("image").addEventListener('click',show);
+            const copyright = document.getElementById("copyright");
+            const recommendations =  document.getElementById("display_recommendations");
+            const copyrights = document.getElementById("display_copyrights");
+
+            copyright.classList.toggle("show");
+            recommendations.classList.toggle("show");
+            copyrights.classList.toggle("show");
+
+        }
+
         return (<footer className = 'welcome-footer'>
             <div className = 'welcome-footer-centered'>
                 <div className = 'welcome-footer-padded'>
                     <div className = 'welcome-footer-row-block welcome-footer--row-1'>
-                        <div className = 'welcome-footer-row-1-text'>{t('welcomepage.jitsiOnMobile')}</div>
+                        {/* <div className = 'welcome-footer-row-1-text'>{t('welcomepage.jitsiOnMobile')}</div>
                         <a
                             className = 'welcome-badge'
                             href = { MOBILE_DOWNLOAD_LINK_IOS }>
@@ -373,7 +430,32 @@ class WelcomePage extends AbstractWelcomePage {
                             <img
                                 alt = { t('welcomepage.mobileDownLoadLinkFDroid') }
                                 src = './images/f-droid-badge.png' />
-                        </a>
+                        </a> */}
+
+                        <div className="footer">
+                            <div className="recommendation">
+                                {/* <img alt="info" src="images/info.png" id="image">Some recommendation</img> */}
+                                <div className="info-logo"></div>
+                                <p onClick={switchShowClass}>Some recommendations</p>
+                                <div id="display_recommendations" >
+                                    <ul>
+                                        <li> Use <a href="https://www.google.com/intl/en_in/chrome/" target="_blank">Google Chrome</a> browser  for a better user experience.</li>
+                                        <li>Keep your microphone and camera muted when possible to avoid extraneous noise <br></br>and echoing. Headphones with built-in microphones give best performance.</li>
+                                        <li>Adjust <a href="static/help.html#videoquality" target="_blank">video quality</a> to match your available bandwidth</li>
+                                        <li>Meeting password is reset when all participants have left the meeting</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className="version">
+                                <div id="copyright" className="show"><a href="static/release.html" target="_blank">Version 1.5.1 </a>  Date: Nov 15, 2020</div>
+                                <div id="display_copyrights">
+                                    <ul>
+                                        <li>Copyright © C-DAC 2020 All rights reserved<br></br>Designed &amp; Maintained by HPC-I&amp;E, C-DAC Pune<br></br><a href="static/release.html" target="_blank">Version 1.5.1 </a>  Date: Nov 15, 2020</li>
+                                    </ul>
+                                </div>  
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
