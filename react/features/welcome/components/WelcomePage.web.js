@@ -13,6 +13,7 @@ import { SettingsButton, SETTINGS_TABS } from '../../settings';
 
 import { AbstractWelcomePage, _mapStateToProps } from './AbstractWelcomePage';
 import Tabs from './Tabs';
+import axios from 'axios';
 
 /**
  * The pattern used to validate room name.
@@ -20,6 +21,8 @@ import Tabs from './Tabs';
  */
 export const ROOM_NAME_VALIDATE_PATTERN_STR = '^[^?&:\u0022\u0027%#]+$';
 
+const CONFERENCES_PARTICIPANTS_COUNT_URL =
+  "https://sangoshthee.cdac.in/getdata/";
 /**
  * The Web container rendering the welcome page.
  *
@@ -47,6 +50,7 @@ class WelcomePage extends AbstractWelcomePage {
         this.state = {
             ...this.state,
 
+            counts: [],
             generateRoomnames:
                 interfaceConfig.GENERATE_ROOMNAMES_ON_WELCOME_PAGE,
             selectedTab: 0
@@ -154,8 +158,74 @@ class WelcomePage extends AbstractWelcomePage {
                 this._additionalCardTemplate.content.cloneNode(true)
             );
         }
-    }
 
+    fetch(CONFERENCES_PARTICIPANTS_COUNT_URL,{
+        mode: 'no-cors' 
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        this.setState({ counts: data });
+        console.log("count: ",this.state.data);
+      })
+      .catch((error) => this.setState({ error, isLoading: false }));
+        // return fetch(CONFERENCES_PARTICIPANTS_COUNT_URL, {
+        //         mode: 'no-cors' ,
+        //         headers: {
+        //           'Content-Type': 'application/json',
+        //           'Access-Control-Allow-Origin' : "*", 
+        //             'Access-Control-Allow-Credentials' : true
+        // }})
+        // .then(response => {
+        //   return response.text()
+        // })
+        // .then((data) => {
+        //   resolve(data[0] ? JSON.parse(data[0]) : {})
+        //   this.setState({counts: data[0]})
+        //     console.log("counts",data[0]);
+        // })
+        // .catch((error) => {
+        //     console.log(error)
+        // })
+
+        // fetch(CONFERENCES_PARTICIPANTS_COUNT_URL, {
+        //     mode: 'no-cors' ,
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //       'Access-Control-Allow-Origin' : "*", 
+        //         'Access-Control-Allow-Credentials' : true
+        //     }
+        // })
+        
+        // .then(response => {
+        //     const data =  response.json();
+        //     this.setState({counts: data})
+        //     console.log("counts",data);
+        // })
+        // // .then(data => {
+        // //     this.setState({counts: data})
+        // // })
+        // // .then((responseJson) => {
+        // //     console.log("hey",responseJson);
+        // // })
+        // .catch(error => this.setState({error, isLoading:false}));
+        // // axios.get(CONFERENCES_PARTICIPANTS_COUNT_URL)
+        // // axios({
+        // //     method: 'GET', 
+        // //     url: CONFERENCES_PARTICIPANTS_COUNT_URL, 
+        // //     headers: {'Content-Type' : 'application/json',
+        // //               'Access-Control-Allow-Origin' : "*"
+        // //     },
+        // // })
+        // // .then(res => {
+        // //     this.setState({counts: res.data});
+        // //     console.log("counts",res.data);
+        // // })
+        // // .catch(error => this.setState({error, isLoading:false}));
+;
+
+    }
     /**
      * Removes the classname used for custom styling of the welcome page.
      *
@@ -182,6 +252,8 @@ class WelcomePage extends AbstractWelcomePage {
         const showAdditionalToolbarContent = this._shouldShowAdditionalToolbarContent();
         const contentClassName = showAdditionalContent ? 'with-content' : 'without-content';
         const footerClassName = DISPLAY_WELCOME_FOOTER ? 'with-footer' : 'without-footer';
+        // const { error, conferenceData } = this.state;
+
 
         return (
             <div
@@ -280,7 +352,11 @@ class WelcomePage extends AbstractWelcomePage {
                         <div class="counter">
                             <div class="square">
                                 <div class="content">
-                                    <div class="count">0</div>
+                                    <div class="count">
+                                    {this.state.counts.conference
+                                    ? this.state.counts.conference
+                                    : "0"}                                    
+                                </div>
                                     <div class="display-text">Current Conferences</div>
                                 </div>
                             </div>
