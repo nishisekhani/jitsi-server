@@ -11,6 +11,11 @@ import { Dialog } from "../../base/dialog";
 import { translate } from "../../base/i18n";
 import { connect } from "../../base/redux";
 import { cancelFeedback, submitFeedback } from "../actions";
+import {
+    NOTIFICATION_TIMEOUT,
+    showFeedbackErrorNotification,
+    showNotification,
+} from "../../notifications";
 
 declare var APP: Object;
 declare var interfaceConfig: Object;
@@ -26,6 +31,13 @@ const scoreAnimationClass = interfaceConfig.ENABLE_FEEDBACK_ANIMATION
  * @types {string[]}
  */
 const SCORES = [
+    "feedback.veryBad",
+    "feedback.bad",
+    "feedback.average",
+    "feedback.good",
+    "feedback.veryGood",
+];
+const SCORES2 = [
     "feedback.veryBad",
     "feedback.bad",
     "feedback.average",
@@ -48,13 +60,14 @@ type Props = {
      * instance of {@code FeedbackDialog}.
      */
     _score: number,
+    _score2: number,
 
     /**
      * The JitsiConference that is being rated. The conference is passed in
      * because feedback can occur after a conference has been left, so
      * references to it may no longer exist in redux.
      */
-    conference: Object,
+    //conference: Object,
 
     /**
      * Invoked to signal feedback submission or canceling.
@@ -87,12 +100,14 @@ type State = {
      * score having been selected.
      */
     mousedOverScore: number,
+    mousedOverScore2: number,
 
     /**
      * The currently selected score selection index. The score will not be 0
      * indexed so subtract one to map with SCORES.
      */
     score: number,
+    score2: number,
 };
 
 /**
@@ -109,6 +124,7 @@ class FeedbackDialog extends Component<Props, State> {
      * once for each score selection icon.
      */
     _scoreClickConfigurations: Array<Object>;
+    _scoreClickConfigurations2: Array<Object>;
 
     /**
      * Initializes a new {@code FeedbackDialog} instance.
@@ -119,7 +135,7 @@ class FeedbackDialog extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        const { _message, _score } = this.props;
+        const { _message, _score, _score2 } = this.props;
 
         this.state = {
             /**
@@ -137,6 +153,7 @@ class FeedbackDialog extends Component<Props, State> {
              * @type {number}
              */
             mousedOverScore: -1,
+            mousedOverScore2: -1,
 
             /**
              * The currently selected score selection index. The score will not
@@ -145,6 +162,13 @@ class FeedbackDialog extends Component<Props, State> {
              * @type {number}
              */
             score: _score > -1 ? _score - 1 : _score,
+            /**
+             * The currently selected score selection index. The score will not
+             * be 0 indexed so subtract one to map with SCORES.
+             *
+             * @type {number}
+             */
+            score2: _score2 > -1 ? _score2 - 1 : _score2,
         };
 
         this._scoreClickConfigurations = SCORES.map((textKey, index) => {
@@ -159,12 +183,26 @@ class FeedbackDialog extends Component<Props, State> {
                 _onMouseOver: () => this._onScoreMouseOver(index),
             };
         });
+        this._scoreClickConfigurations2 = SCORES2.map((textKey, index) => {
+            return {
+                _onClick: () => this._onScoreSelect2(index),
+                _onKeyPres: (e) => {
+                    if (e.key === " " || e.key === "Enter") {
+                        e.preventDefault();
+                        this._onScoreSelect2(index);
+                    }
+                },
+                _onMouseOver: () => this._onScoreMouseOver2(index),
+            };
+        });
 
         // Bind event handlers so they are only bound once for every instance.
         this._onCancel = this._onCancel.bind(this);
         this._onMessageChange = this._onMessageChange.bind(this);
         this._onScoreContainerMouseLeave =
             this._onScoreContainerMouseLeave.bind(this);
+        this._onScoreContainerMouseLeave2 =
+            this._onScoreContainerMouseLeave2.bind(this);
         this._onSubmit = this._onSubmit.bind(this);
     }
 
@@ -198,9 +236,12 @@ class FeedbackDialog extends Component<Props, State> {
      * @returns {ReactElement}
      */
     render() {
-        const { message, mousedOverScore, score } = this.state;
+        const { message, mousedOverScore, mousedOverScore2, score, score2 } =
+            this.state;
         const scoreToDisplayAsSelected =
             mousedOverScore > -1 ? mousedOverScore : score;
+        const scoreToDisplayAsSelected2 =
+            mousedOverScore2 > -1 ? mousedOverScore2 : score2;
 
         const { t } = this.props;
 
@@ -230,6 +271,32 @@ class FeedbackDialog extends Component<Props, State> {
                 );
             }
         );
+        const scoreIcons2 = this._scoreClickConfigurations2.map(
+            (config, index) => {
+                const isFilled = index <= scoreToDisplayAsSelected2;
+                const activeClass = isFilled ? "active" : "";
+                const className = `star-btn ${scoreAnimationClass} ${activeClass}`;
+
+                return (
+                    <span
+                        aria-label={t(SCORES2[index])}
+                        className={className}
+                        key={index}
+                        onClick={config._onClick}
+                        onKeyPress={config._onKeyPres}
+                        onMouseOver={config._onMouseOver}
+                        role="button"
+                        tabIndex={0}
+                    >
+                        {isFilled ? (
+                            <StarFilledIcon label="star-filled" size="xlarge" />
+                        ) : (
+                            <StarIcon label="star" size="xlarge" />
+                        )}
+                    </span>
+                );
+            }
+        );
 
         return (
             <Dialog
@@ -239,6 +306,7 @@ class FeedbackDialog extends Component<Props, State> {
                 titleKey="feedback.rateExperience"
             >
                 <div className="feedback-dialog">
+                    <label className="Audio">Audio Quality*</label>
                     <div className="rating">
                         <div
                             aria-label={this.props.t("feedback.star")}
@@ -253,6 +321,21 @@ class FeedbackDialog extends Component<Props, State> {
                             onMouseLeave={this._onScoreContainerMouseLeave}
                         >
                             {scoreIcons}
+                        </div>
+                    </div>
+                    <label className="Video">Video Quality*</label>
+                    <div className="rating">
+                        <div
+                            aria-label={this.props.t("feedback.star")}
+                            className="star-label"
+                        >
+                            <p>{t(SCORES2[scoreToDisplayAsSelected2])}</p>
+                        </div>
+                        <div
+                            className="stars"
+                            onMouseLeave={this._onScoreContainerMouseLeave2}
+                        >
+                            {scoreIcons2}
                         </div>
                     </div>
                     <div className="details">
@@ -282,10 +365,13 @@ class FeedbackDialog extends Component<Props, State> {
      * @returns {boolean} Returns true to close the dialog.
      */
     _onCancel() {
-        const { message, score } = this.state;
+        const { message, score, score2 } = this.state;
         const scoreToSubmit = score > -1 ? score + 1 : score;
+        const scoreToSubmit2 = score2 > -1 ? score2 + 1 : score2;
 
-        this.props.dispatch(cancelFeedback(scoreToSubmit, message));
+        this.props.dispatch(
+            cancelFeedback(scoreToSubmit, scoreToSubmit2, message)
+        );
 
         return true;
     }
@@ -314,8 +400,12 @@ class FeedbackDialog extends Component<Props, State> {
     _onScoreSelect(score) {
         this.setState({ score });
     }
+    _onScoreSelect2(score2) {
+        this.setState({ score2 });
+    }
 
     _onScoreContainerMouseLeave: () => void;
+    _onScoreContainerMouseLeave2: () => void;
 
     /**
      * Sets the currently hovered score to null to indicate no hover is
@@ -326,6 +416,9 @@ class FeedbackDialog extends Component<Props, State> {
      */
     _onScoreContainerMouseLeave() {
         this.setState({ mousedOverScore: -1 });
+    }
+    _onScoreContainerMouseLeave2() {
+        this.setState({ mousedOverScore2: -1 });
     }
 
     /**
@@ -339,6 +432,9 @@ class FeedbackDialog extends Component<Props, State> {
     _onScoreMouseOver(mousedOverScore) {
         this.setState({ mousedOverScore });
     }
+    _onScoreMouseOver2(mousedOverScore2) {
+        this.setState({ mousedOverScore2 });
+    }
 
     _onSubmit: () => void;
 
@@ -350,12 +446,36 @@ class FeedbackDialog extends Component<Props, State> {
      * @returns {boolean} Returns true to close the dialog.
      */
     _onSubmit() {
-        const { conference, dispatch } = this.props;
-        const { message, score } = this.state;
+        const { dispatch } = this.props;
+        const { message, score, score2 } = this.state;
 
         const scoreToSubmit = score > -1 ? score + 1 : score;
+        const scoreToSubmit2 = score2 > -1 ? score2 + 1 : score2;
 
-        dispatch(submitFeedback(scoreToSubmit, message, conference));
+        //dispatch(submitFeedback(scoreToSubmit, scoreToSubmit2, message));
+        dispatch(submitFeedback(scoreToSubmit, scoreToSubmit2, message)).then(
+            () =>
+                dispatch(
+                    showNotification(
+                        {
+                            descriptionKey: "notify.feedBackTitle",
+                            titleKey: "notify.feedBackDescription",
+                        },
+                        NOTIFICATION_TIMEOUT * 2
+                    )
+                ),
+            (error) => {
+                dispatch(
+                    showFeedbackErrorNotification(
+                        {
+                            descriptionKey: "notify.feedBackTitle",
+                            titleKey: "notify.feedBackErrorTitle",
+                        },
+                        NOTIFICATION_TIMEOUT * 2
+                    )
+                );
+            }
+        );
 
         return true;
     }
@@ -371,7 +491,7 @@ class FeedbackDialog extends Component<Props, State> {
  * }}
  */
 function _mapStateToProps(state) {
-    const { message, score } = state["features/feedback"];
+    const { message, score, score2 } = state["features/feedback"];
 
     return {
         /**
@@ -388,6 +508,12 @@ function _mapStateToProps(state) {
          * @type {number}
          */
         _score: score,
+        /**
+         * The currently selected score selection index.
+         *
+         * @type {number}
+         */
+        _score2: score2,
     };
 }
 
