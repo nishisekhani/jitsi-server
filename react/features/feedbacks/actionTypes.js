@@ -7,7 +7,7 @@
  *     score: number
  * }
  */
-export const CANCEL_FEEDBACK = "CANCEL_FeEDBACK";
+export const CANCEL_FEEDBACK = "CANCEL_FEEDBACK";
 
 /**
  * The type of the action which signals feedback failed to be recorded.

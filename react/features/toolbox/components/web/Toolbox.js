@@ -589,6 +589,18 @@ class Toolbox extends Component<Props> {
     }
 
     /**
+     * Callback invoked to display {@code FeedbacksDialog}.
+     *
+     * @private
+     * @returns {void}
+     */
+    _doOpenFeedbacks() {
+        //const { _conference } = this.props;
+
+        this.props.dispatch(openFeedbacksDialog());
+    }
+
+    /**
      * Callback invoked to display {@code FeedbackDialog}.
      *
      * @private
@@ -948,7 +960,10 @@ class Toolbox extends Component<Props> {
      * @returns {void}
      */
     _onToolbarOpenFeedbacks() {
-        this.props.dispatch(openFeedbacksDialog());
+        //this.props.dispatch(openFeedbacksDialog());
+        sendAnalytics(createToolbarEvent("feedback"));
+
+        this._doOpenFeedbacks();
     }
 
     _onToolbarOpenKeyboardShortcuts: () => void;

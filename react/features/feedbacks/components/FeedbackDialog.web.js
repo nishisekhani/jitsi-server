@@ -56,10 +56,15 @@ type Props = {
     _message: string,
 
     /**
-     * The cached feedback score, if any, that was set when closing a previous
+     * The cached feedback Audio score, if any, that was set when closing a previous
      * instance of {@code FeedbackDialog}.
      */
     _score: number,
+
+    /**
+     * The cached feedback Video score, if any, that was set when closing a previous
+     * instance of {@code FeedbackDialog}.
+     */
     _score2: number,
 
     /**

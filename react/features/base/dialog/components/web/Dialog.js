@@ -1,19 +1,18 @@
 // @flow
 
-import React from 'react';
+import React from "react";
 
-import { connect } from '../../../redux';
-import AbstractDialog from '../AbstractDialog';
-import type { Props as AbstractDialogProps, State } from '../AbstractDialog';
+import { connect } from "../../../redux";
+import AbstractDialog from "../AbstractDialog";
+import type { Props as AbstractDialogProps, State } from "../AbstractDialog";
 
-import StatelessDialog from './StatelessDialog';
-import { Children } from 'react';
+import StatelessDialog from "./StatelessDialog";
+//import { Children } from 'react';
 
 /**
  * The type of the React {@code Component} props of {@link Dialog}.
  */
 type Props = AbstractDialogProps & {
-
     /**
      * True if listening for the Enter key should be disabled.
      */
@@ -37,7 +36,7 @@ type Props = AbstractDialogProps & {
      * - integer value for pixel width
      * - string value for percentage
      */
-    width: string
+    width: string,
 };
 
 /**
@@ -68,21 +67,20 @@ class Dialog extends AbstractDialog<Props, State> {
         const props = {
             ...this.props,
             onCancel: this._onCancel,
-            onSubmit: this._onSubmit
+            onSubmit: this._onSubmit,
         };
 
         // $FlowExpectedError
         delete props.dispatch;
 
-        return(
-            <>
-            <StatelessDialog { ...props } />
+        return (
+            //<>
+            <StatelessDialog {...props} />
 
-            {this.props.children}
-            
-            </>
+            //{this.props.children}
 
-        ) ;
+            //</>
+        );
     }
 
     _onCancel: () => void;
