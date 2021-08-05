@@ -63,6 +63,7 @@ import {
     openSettingsDialog,
 } from "../../../settings";
 import { SharedVideoButton } from "../../../shared-video/components";
+import { toggleSharedVideo } from "../../../sharedPresentation/actions.any";
 import { SpeakerStats } from "../../../speaker-stats";
 import { ClosedCaptionButton } from "../../../subtitles";
 import {
@@ -399,6 +400,7 @@ class Toolbox extends Component<Props> {
             this._onShortcutToggleVideoQuality.bind(this);
         this._onToolbarOpenFeedbacks = this._onToolbarOpenFeedbacks.bind(this);
         this._onToolbarOpenFeedback = this._onToolbarOpenFeedback.bind(this);
+        this._onToolbarOpenSharePPT = this._onToolbarOpenSharePPT.bind(this);
         this._onToolbarToggleParticipantsPane =
             this._onToolbarToggleParticipantsPane.bind(this);
         this._onToolbarOpenKeyboardShortcuts =
@@ -964,6 +966,19 @@ class Toolbox extends Component<Props> {
         sendAnalytics(createToolbarEvent("feedback"));
 
         this._doOpenFeedbacks();
+    }
+
+    _onToolbarOpenSharePPT: () => void;
+
+    /**
+     * Creates an analytics toolbar event and dispatches an action for toggling
+     * display of Share Presentation.
+     *
+     * @private
+     * @returns {void}
+     */
+    _onToolbarOpenSharePPT() {
+        this.props.dispatch(toggleSharedVideo());
     }
 
     _onToolbarOpenKeyboardShortcuts: () => void;
@@ -1548,6 +1563,18 @@ class Toolbox extends Component<Props> {
                 key="feedbacks"
                 onClick={this._onToolbarOpenFeedbacks}
                 tooltip={t("toolbar.feedback")}
+            />
+        );
+
+        mainMenuAdditionalButtons.push(
+            //<SharedVideoButton key="sharedvideos" showLabel={true} />
+            <ToolbarButton
+                accessibilityLabel={t("toolbar.accessibilityLabel.feedback")}
+                icon={IconDeviceDocument}
+                title="share presentation"
+                key="sharePPT"
+                onClick={this._onToolbarOpenSharePPT}
+                tooltip={t("share presentation")}
             />
         );
 

@@ -1,22 +1,23 @@
 // @flow
-import type { Dispatch } from 'redux';
+import type { Dispatch } from "redux";
 
-import { getFeatureFlag, TILE_VIEW_ENABLED } from '../base/flags';
+import { getFeatureFlag, TILE_VIEW_ENABLED } from "../base/flags";
 import {
     getPinnedParticipant,
     getParticipantCount,
-    pinParticipant
-} from '../base/participants';
+    pinParticipant,
+} from "../base/participants";
 import {
     ASPECT_RATIO_BREAKPOINT,
     DEFAULT_MAX_COLUMNS,
     ABSOLUTE_MAX_COLUMNS,
     SINGLE_COLUMN_BREAKPOINT,
-    TWO_COLUMN_BREAKPOINT
-} from '../filmstrip/constants';
-import { isVideoPlaying } from '../shared-video/functions';
+    TWO_COLUMN_BREAKPOINT,
+} from "../filmstrip/constants";
+import { isVideoPlaying } from "../shared-video/functions";
+import { isVideoPlayings } from "../sharedPresentation/functions";
 
-import { LAYOUTS } from './constants';
+import { LAYOUTS } from "./constants";
 
 declare var interfaceConfig: Object;
 
@@ -30,9 +31,9 @@ declare var interfaceConfig: Object;
  * pin any screen shares.
  */
 export function getAutoPinSetting() {
-    return typeof interfaceConfig === 'object'
+    return typeof interfaceConfig === "object"
         ? interfaceConfig.AUTO_PIN_LATEST_SCREEN_SHARE
-        : 'remote-only';
+        : "remote-only";
 }
 
 /**
@@ -60,11 +61,12 @@ export function getCurrentLayout(state: Object) {
  * @returns {number}
  */
 export function getMaxColumnCount(state: Object) {
-    const configuredMax = interfaceConfig.TILE_VIEW_MAX_COLUMNS || DEFAULT_MAX_COLUMNS;
-    const { disableResponsiveTiles } = state['features/base/config'];
+    const configuredMax =
+        interfaceConfig.TILE_VIEW_MAX_COLUMNS || DEFAULT_MAX_COLUMNS;
+    const { disableResponsiveTiles } = state["features/base/config"];
 
     if (!disableResponsiveTiles) {
-        const { clientWidth } = state['features/base/responsive-ui'];
+        const { clientWidth } = state["features/base/responsive-ui"];
         const participantCount = getParticipantCount(state);
 
         // If there are just two participants in a conference, enforce single-column view for mobile size.
@@ -100,8 +102,9 @@ export function getTileViewGridDimensions(state: Object) {
 
     // When in tile view mode, we must discount ourselves (the local participant) because our
     // tile is not visible.
-    const { iAmRecorder } = state['features/base/config'];
-    const numberOfParticipants = state['features/base/participants'].length - (iAmRecorder ? 1 : 0);
+    const { iAmRecorder } = state["features/base/config"];
+    const numberOfParticipants =
+        state["features/base/participants"].length - (iAmRecorder ? 1 : 0);
 
     const columnsToMaintainASquare = Math.ceil(Math.sqrt(numberOfParticipants));
     const columns = Math.min(columnsToMaintainASquare, maxColumns);
@@ -111,7 +114,7 @@ export function getTileViewGridDimensions(state: Object) {
     return {
         columns,
         minVisibleRows,
-        rows
+        rows,
     };
 }
 
@@ -126,14 +129,18 @@ export function getTileViewGridDimensions(state: Object) {
 export function shouldDisplayTileView(state: Object = {}) {
     const participantCount = getParticipantCount(state);
 
-    const tileViewEnabledFeatureFlag = getFeatureFlag(state, TILE_VIEW_ENABLED, true);
-    const { disableTileView } = state['features/base/config'];
+    const tileViewEnabledFeatureFlag = getFeatureFlag(
+        state,
+        TILE_VIEW_ENABLED,
+        true
+    );
+    const { disableTileView } = state["features/base/config"];
 
     if (disableTileView || !tileViewEnabledFeatureFlag) {
         return false;
     }
 
-    const { tileViewEnabled } = state['features/video-layout'];
+    const { tileViewEnabled } = state["features/video-layout"];
 
     if (tileViewEnabled !== undefined) {
         // If the user explicitly requested a view mode, we
@@ -141,28 +148,25 @@ export function shouldDisplayTileView(state: Object = {}) {
         return tileViewEnabled;
     }
 
-    const { iAmRecorder } = state['features/base/config'];
+    const { iAmRecorder } = state["features/base/config"];
 
     // None tile view mode is easier to calculate (no need for many negations), so we do
     // that and negate it only once.
     const shouldDisplayNormalMode = Boolean(
-
         // Reasons for normal mode:
 
         // Editing etherpad
-        state['features/etherpad']?.editing
-
-        // We pinned a participant
-        || getPinnedParticipant(state)
-
-        // It's a 1-on-1 meeting
-        || participantCount < 3
-
-        // There is a shared YouTube video in the meeting
-        || isVideoPlaying(state)
-
-        // We want jibri to use stage view by default
-        || iAmRecorder
+        state["features/etherpad"]?.editing ||
+            // We pinned a participant
+            getPinnedParticipant(state) ||
+            // It's a 1-on-1 meeting
+            participantCount < 3 ||
+            // There is a shared YouTube video in the meeting
+            isVideoPlaying(state) ||
+            // There is a shared YouTube video in the meeting
+            isVideoPlayings(state) ||
+            // We want jibri to use stage view by default
+            iAmRecorder
     );
 
     return !shouldDisplayNormalMode;
@@ -178,9 +182,12 @@ export function shouldDisplayTileView(state: Object = {}) {
  * @returns {void}
  */
 export function updateAutoPinnedParticipant(
-        screenShares: Array<string>, { dispatch, getState }: { dispatch: Dispatch<any>, getState: Function }) {
+    screenShares: Array<string>,
+    { dispatch, getState }: { dispatch: Dispatch<any>, getState: Function }
+) {
     const state = getState();
-    const remoteScreenShares = state['features/video-layout'].remoteScreenShares;
+    const remoteScreenShares =
+        state["features/video-layout"].remoteScreenShares;
     const pinned = getPinnedParticipant(getState);
 
     // if the pinned participant is shared video or some other fake participant we want to skip auto-pinning
@@ -193,7 +200,7 @@ export function updateAutoPinnedParticipant(
     if (!remoteScreenShares?.length) {
         let participantId = null;
 
-        if (pinned && !screenShares.find(share => share === pinned.id)) {
+        if (pinned && !screenShares.find((share) => share === pinned.id)) {
             participantId = pinned.id;
         }
         dispatch(pinParticipant(participantId));
@@ -201,7 +208,8 @@ export function updateAutoPinnedParticipant(
         return;
     }
 
-    const latestScreenShareParticipantId = remoteScreenShares[remoteScreenShares.length - 1];
+    const latestScreenShareParticipantId =
+        remoteScreenShares[remoteScreenShares.length - 1];
 
     if (latestScreenShareParticipantId) {
         dispatch(pinParticipant(latestScreenShareParticipantId));
