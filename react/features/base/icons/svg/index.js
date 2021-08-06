@@ -133,3 +133,5 @@ export { default as IconYahoo } from './yahoo.svg';
 export { default as IconSip } from './sip.svg';
 
 export { default as IconStopRec } from './stop-recording.svg';
+export { default as IconUpload } from './upload.svg';
+export { default as IconFeedback2 } from './feedback2.svg';

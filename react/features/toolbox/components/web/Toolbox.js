@@ -28,6 +28,8 @@ import {
     IconShareDesktop,
     IconRec,
     IconStopRec,
+    IconUpload,
+    IconFeedback2,
 } from "../../../base/icons";
 import JitsiMeetJS from "../../../base/lib-jitsi-meet";
 import {
@@ -98,6 +100,8 @@ import OverflowMenuProfileItem from "./OverflowMenuProfileItem";
 import ToggleCameraButton from "./ToggleCameraButton";
 import ToolbarButton from "./ToolbarButton";
 import VideoSettingsButton from "./VideoSettingsButton";
+
+import UploadPPT from '../../../uploadPPT/upload';
 
 /**
  * The type of the React {@code Component} props of {@link Toolbox}.
@@ -427,18 +431,7 @@ class Toolbox extends Component<Props> {
             this._onShortcutToggleTileView.bind(this);
         this._onEscKey = this._onEscKey.bind(this);
 
-        // adding local recording handler
-        // this._LocalRecording = this._LocalRecording.bind(this);
-        // this._startLocalRecording = this._startLocalRecording.bind(this);
-        // this._stopLocalRecording = this._stopLocalRecording.bind(this);
-        // this._mixer = this._mixer.bind(this);
-        // this._getFilename = this._getFilename.bind(this);
-
-        // this.state = {
-        //     recStatus: false,
-        //     recorder,
-        //     recordingData: [],
-        // };
+        this._UploadPPT = this._UploadPPT.bind(this);
     }
 
     /**
@@ -1416,6 +1409,10 @@ class Toolbox extends Component<Props> {
         ];
     }
 
+    _UploadPPT() {
+        this.props.dispatch(openDialog(UploadPPT)); 
+    }
+
     /**
      * Returns the buttons to be displayed in main or the overflow menu.
      *
@@ -1515,8 +1512,16 @@ class Toolbox extends Component<Props> {
                 key="startLocalRec"
                 onClick={_LocalRecording}
                 toggled={recStatus}
+                tooltip={t("Start Local Recording")}
             />
         );
+
+        mainMenuAdditionalButtons.push(<ToolbarButton
+            icon = { IconUpload }
+            key = 'uploadPPT'
+            onClick = { this._UploadPPT }
+            tooltip={t("Upload Presentation")}
+            />)
 
         if (this.props._shouldShowButton("raisehand")) {
             const raisedHand = this.props._raisedHand || false;
@@ -1558,7 +1563,7 @@ class Toolbox extends Component<Props> {
         mainMenuAdditionalButtons.push(
             <ToolbarButton
                 accessibilityLabel={t("toolbar.accessibilityLabel.feedback")}
-                icon={IconFeedback}
+                icon={IconFeedback2}
                 title="GivefeedBack"
                 key="feedbacks"
                 onClick={this._onToolbarOpenFeedbacks}
@@ -1574,7 +1579,7 @@ class Toolbox extends Component<Props> {
                 title="share presentation"
                 key="sharePPT"
                 onClick={this._onToolbarOpenSharePPT}
-                tooltip={t("share presentation")}
+                tooltip={t("Share Presentation")}
             />
         );
 
