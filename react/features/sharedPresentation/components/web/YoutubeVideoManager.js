@@ -1,15 +1,15 @@
 /* eslint-disable no-invalid-this */
-import Logger from 'jitsi-meet-logger';
-import React from 'react';
-import YouTube from 'react-youtube';
+import Logger from "jitsi-meet-logger";
+import React from "react";
+import YouTube from "react-youtube";
 
-import { connect } from '../../../base/redux';
+import { connect } from "../../../base/redux";
 
 import AbstractVideoManager, {
     _mapDispatchToProps,
     _mapStateToProps,
-    PLAYBACK_STATES
-} from './AbstractVideoManager';
+    PLAYBACK_STATES,
+} from "./AbstractVideoManager";
 
 const logger = Logger.getLogger(__filename);
 
@@ -166,13 +166,13 @@ class YoutubeVideoManager extends AbstractVideoManager<Props> {
      *
      * @returns {void}
      */
-    onPlayerStateChange = event => {
+    onPlayerStateChange = (event) => {
         if (event.data === YouTube.PlayerState.PLAYING) {
             this.onPlay();
         } else if (event.data === YouTube.PlayerState.PAUSED) {
             this.onPause();
         }
-    }
+    };
 
     /**
      * Fired when youtube player is ready.
@@ -181,17 +181,20 @@ class YoutubeVideoManager extends AbstractVideoManager<Props> {
      *
      * @returns {void}
      */
-    onPlayerReady = event => {
+    onPlayerReady = (event) => {
         const { _isOwner } = this.props;
 
         this.player = event.target;
 
-        this.player.addEventListener('onVolumeChange', () => {
+        this.player.addEventListener("onVolumeChange", () => {
             this.onVolumeChange();
         });
 
         if (_isOwner) {
-            this.player.addEventListener('onVideoProgress', this.throttledFireUpdateSharedVideoEvent);
+            this.player.addEventListener(
+                "onVideoProgress",
+                this.throttledFireUpdateSharedVideoEvent
+            );
         }
 
         this.play();
@@ -210,8 +213,8 @@ class YoutubeVideoManager extends AbstractVideoManager<Props> {
      *
      * @returns {void}
      */
-    onPlayerError = event => {
-        logger.error('Error in the player:', event.data);
+    onPlayerError = (event) => {
+        logger.error("Error in the player:", event.data);
 
         // store the error player, so we can remove it
         this.errorInPlayer = event.target;
@@ -222,26 +225,26 @@ class YoutubeVideoManager extends AbstractVideoManager<Props> {
         const showControls = _isOwner ? 1 : 0;
 
         const options = {
-            id: 'sharedVideoPlayer',
+            id: "sharedVideoPlayer",
             opts: {
-                height: '100%',
-                width: '100%',
+                height: "100%",
+                width: "100%",
                 playerVars: {
-                    'origin': location.origin,
-                    'fs': '0',
-                    'autoplay': 0,
-                    'controls': showControls,
-                    'rel': 0
-                }
+                    origin: location.origin,
+                    fs: "0",
+                    autoplay: 0,
+                    controls: showControls,
+                    rel: 0,
+                },
             },
             onError: this.onPlayerError,
             onReady: this.onPlayerReady,
             onStateChange: this.onPlayerStateChange,
-            videoId
+            videoId,
         };
 
         return options;
-    }
+    };
 
     /**
      * Implements React Component's render.
@@ -249,9 +252,23 @@ class YoutubeVideoManager extends AbstractVideoManager<Props> {
      * @inheritdoc
      */
     render() {
-        return (<YouTube
-            { ...this.getPlayerOptions() } />);
+        var splitURL = window.location.href.split("/");
+        var meetingName = splitURL[3];
+        return (
+            <iframe
+                id="sharedVideoPlayer"
+                src={
+                    "https://sangoshthee.cdac.in/presentation/?meetingId=" +
+                    meetingName
+                }
+                height="100%"
+                width="100%"
+            ></iframe>
+        );
     }
 }
 
-export default connect(_mapStateToProps, _mapDispatchToProps)(YoutubeVideoManager);
+export default connect(
+    _mapStateToProps,
+    _mapDispatchToProps
+)(YoutubeVideoManager);

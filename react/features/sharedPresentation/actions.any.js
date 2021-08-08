@@ -1,7 +1,7 @@
 import { getCurrentConference } from "../base/conference";
 import { openDialog } from "../base/dialog/actions";
 import { getLocalParticipant } from "../base/participants";
-import { SharedVideoDialog } from "../shared-video/components";
+import { SharedVideoDialog } from "../sharedPresentation/components";
 
 import {
     RESET_SHARED_VIDEO_STATUS,
@@ -74,7 +74,7 @@ export function showSharedVideoDialog(onPostSubmit) {
  *
  * @returns {Function}
  */
-export function stopSharedVideos() {
+export function stopSharedVideo() {
     return (dispatch, getState) => {
         const state = getState();
         const { ownerId } = state["features/shared-video"];
@@ -94,7 +94,7 @@ export function stopSharedVideos() {
  *
  * @returns {Function}
  */
-export function playSharedVideos(videoUrl) {
+export function playSharedVideo(videoUrl) {
     return (dispatch, getState) => {
         const conference = getCurrentConference(getState());
 
@@ -125,10 +125,10 @@ export function toggleSharedVideo() {
         const { status } = state["features/shared-video"];
 
         if (["playing", "start", "pause"].includes(status)) {
-            dispatch(stopSharedVideos());
+            dispatch(stopSharedVideo());
         } else {
             dispatch(
-                showSharedVideoDialog((id) => dispatch(playSharedVideos(id)))
+                showSharedVideoDialog((id) => dispatch(playSharedVideo(id)))
             );
         }
     };

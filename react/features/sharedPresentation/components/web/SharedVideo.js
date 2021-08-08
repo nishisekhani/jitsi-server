@@ -47,7 +47,7 @@ type Props = {
  *
  * @extends Component
  */
-class sharedvideos extends Component<Props> {
+class SharedVideos extends Component<Props> {
     /**
      * Computes the width and the height of the component.
      *
@@ -150,4 +150,4 @@ function _mapStateToProps(state) {
     };
 }
 
-export default connect(_mapStateToProps)(SharedVideo);
+export default connect(_mapStateToProps)(SharedVideos);

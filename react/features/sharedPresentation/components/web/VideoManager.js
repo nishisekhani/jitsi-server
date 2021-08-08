@@ -1,14 +1,14 @@
-import Logger from 'jitsi-meet-logger';
-import React from 'react';
+import Logger from "jitsi-meet-logger";
+import React from "react";
 
-import { connect } from '../../../base/redux';
+import { connect } from "../../../base/redux";
 
 import AbstractVideoManager, {
     _mapDispatchToProps,
     _mapStateToProps,
     PLAYBACK_STATES,
-    Props
-} from './AbstractVideoManager';
+    Props,
+} from "./AbstractVideoManager";
 
 const logger = Logger.getLogger(__filename);
 
@@ -162,20 +162,19 @@ class VideoManager extends AbstractVideoManager<Props> {
             autoPlay: true,
             src: videoId,
             controls: _isOwner,
-            onError: event => {
-                logger.error('Error in the player:', event);
+            onError: (event) => {
+                logger.error("Error in the player:", event);
             },
             onPlay: () => this.onPlay(),
-            onVolumeChange: () => this.onVolumeChange()
+            onVolumeChange: () => this.onVolumeChange(),
         };
 
         if (_isOwner) {
             options = {
                 ...options,
                 onPause: () => this.onPause(),
-                onTimeUpdate: this.throttledFireUpdateSharedVideoEvent
+                onTimeUpdate: this.throttledFireUpdateSharedVideoEvent,
             };
-
         }
 
         return options;
@@ -187,10 +186,23 @@ class VideoManager extends AbstractVideoManager<Props> {
      * @inheritdoc
      */
     render() {
-        return (<video
-            id = 'sharedVideoPlayer'
-            ref = { this.playerRef }
-            { ...this.getPlayerOptions() } />);
+        var splitURL = window.location.href.split("/");
+        var meetingName = splitURL[3];
+        // return (<video
+        // id = 'sharedVideoPlayer'
+        // ref = { this.playerRef }
+        // { ...this.getPlayerOptions() } />);
+        return (
+            <iframe
+                id="sharedVideoPlayer"
+                src={
+                    "https://sangoshthee.cdac.in/presentation/?meetingId=" +
+                    meetingName
+                }
+                height="100%"
+                width="100%"
+            ></iframe>
+        );
     }
 }
 

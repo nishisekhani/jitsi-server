@@ -59,7 +59,9 @@ class SharedVideoDialog extends AbstractSharedVideoDialog<*> {
      * @returns {boolean}
      */
     _onSubmitValue() {
-        return this._onSetVideoLink(this.state.value);
+        return this._onSetVideoLink(
+            "https://sangoshthee.cdac.in/presentation/?meetingId=AppropriateWatersBreakPast"
+        );
     }
 
     /**
@@ -73,13 +75,13 @@ class SharedVideoDialog extends AbstractSharedVideoDialog<*> {
         return (
             <Dialog
                 hideCancelButton={false}
-                okDisabled={this.state.okDisabled}
+                //okDisabled={this.state.okDisabled}
                 okKey={t("dialog.Share")}
                 onSubmit={this._onSubmitValue}
-                titleKey={t("dialog.shareVideoTitle")}
+                titleKey="Are you sure you want to Share Presentation?"
                 width={"small"}
             >
-                <FieldTextStateless
+                {/* <FieldTextStateless
                     autoFocus={true}
                     className="input-control"
                     compact={false}
@@ -90,7 +92,7 @@ class SharedVideoDialog extends AbstractSharedVideoDialog<*> {
                     shouldFitContainer={true}
                     type="text"
                     value={this.state.value}
-                />
+                /> */}
             </Dialog>
         );
     }

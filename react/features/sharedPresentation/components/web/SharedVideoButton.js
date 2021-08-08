@@ -26,7 +26,7 @@ type Props = AbstractButtonProps & {
     /**
      * Whether or not the local participant is sharing a video.
      */
-    _sharingVideo: boolean,
+    _sharingPPTs: boolean,
 };
 
 /**
@@ -57,7 +57,7 @@ class SharedVideoButtons extends AbstractButton<Props, *> {
      * @returns {boolean}
      */
     _isToggled() {
-        return this.props._sharingVideo;
+        return this.props._sharingPPTs;
     }
 
     /**
@@ -95,7 +95,7 @@ function _mapStateToProps(state): Object {
 
     return {
         _isDisabled: sharedVideoBtnDisabled,
-        _sharingVideo: isSharingStatus(sharedVideoStatus),
+        _sharingPPTs: isSharingStatus(sharedVideoStatus),
     };
 }
 
