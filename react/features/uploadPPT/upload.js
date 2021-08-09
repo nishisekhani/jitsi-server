@@ -10,7 +10,7 @@ export default class UploadPPT extends Component<Props> {
         this.state = {
             data: "",
             selectedFile: "",
-            buttonVal: false,
+            buttonVal: true,
             isLoading: false,
         }
 
@@ -29,7 +29,7 @@ export default class UploadPPT extends Component<Props> {
             this.setState({ buttonVal: true });
         } else {
             console.log('File Name does not have White Space')
-            if(file.size > 209715200) {
+            if(file.size > 419430400) {
                 this.setState({ data: "File Size Limit Exceed" });
             } else {
                 this.setState({ data: "" });
@@ -93,7 +93,11 @@ export default class UploadPPT extends Component<Props> {
                 titleKey="Please Upload Presentation"
                 width="small"
             >
-                <div>
+                <div style={{
+                    padding: "11px",
+                    borderRadius: "5px      ",
+                    backgroundColor: "white"
+                }} >
                     <input type="file" name="sampleFile" accept=".ppt, .pptx" className="form-control" onChange={ this.onFileChange }/>
                 </div>
                 <div>
