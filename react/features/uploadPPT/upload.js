@@ -22,6 +22,9 @@ export default class UploadPPT extends Component<Props> {
     onFileChange = event => {
         const file = event.target.files[0];
         const fileName = file.name;
+        const lastDot = fileName.lastIndexOf('.');
+        const ext = fileName.substring(lastDot + 1);
+        console.log('fileName : ' + fileName + ' + ext : ' + ext);
         
         if(fileName.indexOf(' ') >= 1) {
             console.log('name has white space');
@@ -29,16 +32,22 @@ export default class UploadPPT extends Component<Props> {
             this.setState({ buttonVal: true });
         } else {
             console.log('File Name does not have White Space')
-            if(file.size > 419430400) {
-                this.setState({ data: "File Size Limit Exceed" });
+            if(file.size > 52428800) {
+                console.log("File Size Limit Exceed (only up to 50MB is allowed)");
+                this.setState({ data: "File Size Limit Exceed (only up to 50MB is allowed)" });
+                this.setState({ buttonVal: true });
             } else {
-                this.setState({ data: "" });
-                this.setState({ selectedFile: event.target.files[0] });
-                this.setState({ buttonVal: false });
+                if(ext == "ppt" || ext == "pptx") {
+                    this.setState({ data: "" });
+                    this.setState({ selectedFile: event.target.files[0] });
+                    this.setState({ buttonVal: false });
+                } else {
+                    console.log('not a .ppt or .pptx file');
+                    this.setState({data : "Please Select the Correct File"});
+                    this.setState({ buttonVal: true });
+                }
             }
         }
-
-        console.log('last line of onFileChange Function');
     }
 
     //on click of upload button
@@ -46,8 +55,7 @@ export default class UploadPPT extends Component<Props> {
         // object for form data
         const formData = new FormData();
         this.setState({ isLoading: true });
-        // isLoading = true;
-
+        
         // API request
         const url = "https://sangoshthee.cdac.in/FileUploadService";
 
@@ -73,11 +81,10 @@ export default class UploadPPT extends Component<Props> {
             this.setState( { data: "Error in Uploading Presentation", isLoading: false });
             console.log(err);
         });
-        console.log('last line of onSubmit function');
     };
 
     render() {
-        console.log(this.state.isLoading);
+        // console.log(this.state.isLoading);
         let isLoadingStatus = this.state.isLoading;
         let displayLoadingStatus;
         if(isLoadingStatus) {
