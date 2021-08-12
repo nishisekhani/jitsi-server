@@ -305,6 +305,7 @@ class FeedbackDialog extends Component<Props, State> {
 
         return (
             <Dialog
+                okDisabled={score2 == -1 || score == -1}
                 okKey="dialog.Submit"
                 onCancel={this._onCancel}
                 onSubmit={this._onSubmit}
@@ -323,9 +324,9 @@ class FeedbackDialog extends Component<Props, State> {
                         </div>
                         <div
                             className="stars"
-                            onMouseLeave={this._onScoreContainerMouseLeave}
+                            onMouseLeave={this._onScoreContainerMouseLeave2}
                         >
-                            {scoreIcons}
+                            {scoreIcons2}
                         </div>
                     </div>
                     <label className="Video">Video Quality*</label>
@@ -338,9 +339,9 @@ class FeedbackDialog extends Component<Props, State> {
                         </div>
                         <div
                             className="stars"
-                            onMouseLeave={this._onScoreContainerMouseLeave2}
+                            onMouseLeave={this._onScoreContainerMouseLeave}
                         >
-                            {scoreIcons2}
+                            {scoreIcons}
                         </div>
                     </div>
                     <div className="details">

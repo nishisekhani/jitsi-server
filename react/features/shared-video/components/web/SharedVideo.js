@@ -1,19 +1,18 @@
 // @flow
 
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import Filmstrip from '../../../../../modules/UI/videolayout/Filmstrip';
-import { getLocalParticipant } from '../../../base/participants';
-import { connect } from '../../../base/redux';
-import { getToolboxHeight } from '../../../toolbox/functions.web';
+import Filmstrip from "../../../../../modules/UI/videolayout/Filmstrip";
+import { getLocalParticipant } from "../../../base/participants";
+import { connect } from "../../../base/redux";
+import { getToolboxHeight } from "../../../toolbox/functions.web";
 
-import VideoManager from './VideoManager';
-import YoutubeVideoManager from './YoutubeVideoManager';
+import VideoManager from "./VideoManager";
+import YoutubeVideoManager from "./YoutubeVideoManager";
 
 declare var interfaceConfig: Object;
 
 type Props = {
-
     /**
      * The available client width
      */
@@ -34,13 +33,13 @@ type Props = {
      *
      * @private
      */
-     isOwner: boolean,
+    isOwner: boolean,
 
     /**
      * The shared video url
      */
-     videoUrl: string,
-}
+    videoUrl: string,
+};
 
 /**
  * Implements a React {@link Component} which represents the large video (a.k.a.
@@ -65,7 +64,9 @@ class SharedVideo extends Component<Props> {
 
         if (interfaceConfig.VERTICAL_FILMSTRIP) {
             if (filmstripVisible) {
-                width = `${clientWidth - Filmstrip.getVerticalFilmstripWidth()}px`;
+                width = `${
+                    clientWidth - Filmstrip.getVerticalFilmstripWidth()
+                }px`;
             } else {
                 width = `${clientWidth}px`;
             }
@@ -81,7 +82,7 @@ class SharedVideo extends Component<Props> {
 
         return {
             width,
-            height
+            height,
         };
     }
 
@@ -98,10 +99,10 @@ class SharedVideo extends Component<Props> {
         }
 
         if (videoUrl.match(/http/)) {
-            return <VideoManager videoId = { videoUrl } />;
+            return <VideoManager videoId={videoUrl} />;
         }
 
-        return <YoutubeVideoManager videoId = { videoUrl } />;
+        return <YoutubeVideoManager videoId={videoUrl} />;
     }
 
     /**
@@ -112,19 +113,19 @@ class SharedVideo extends Component<Props> {
      */
     render() {
         const { isOwner } = this.props;
-        const className = isOwner ? '' : 'disable-pointer';
+        const className = isOwner ? "" : "disable-pointer";
 
         return (
             <div
-                className = { className }
-                id = 'sharedVideo'
-                style = { this.getDimensions() }>
+                className={className}
+                id="sharedVideo"
+                style={this.getDimensions()}
+            >
                 {this.getManager()}
             </div>
         );
     }
 }
-
 
 /**
  * Maps (parts of) the Redux state to the associated LargeVideo props.
@@ -134,9 +135,9 @@ class SharedVideo extends Component<Props> {
  * @returns {Props}
  */
 function _mapStateToProps(state) {
-    const { ownerId, videoUrl } = state['features/shared-video'];
-    const { clientHeight, clientWidth } = state['features/base/responsive-ui'];
-    const { visible } = state['features/filmstrip'];
+    const { ownerId, videoUrl } = state["features/shared-video"];
+    const { clientHeight, clientWidth } = state["features/base/responsive-ui"];
+    const { visible } = state["features/filmstrip"];
 
     const localParticipant = getLocalParticipant(state);
 
@@ -145,7 +146,7 @@ function _mapStateToProps(state) {
         clientWidth,
         filmstripVisible: visible,
         isOwner: ownerId === localParticipant.id,
-        videoUrl
+        videoUrl,
     };
 }
 

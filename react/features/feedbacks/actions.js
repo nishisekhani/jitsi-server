@@ -66,8 +66,8 @@ export function submitFeedback(score, score2, message) {
     return axios
         .post(url, {
             user_name: username,
-            ratings: score,
-            video_rating: score2,
+            ratings: score2,
+            video_rating: score,
             message: message,
             conference_name: meetingName,
         })
