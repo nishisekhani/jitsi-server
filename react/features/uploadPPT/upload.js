@@ -32,9 +32,9 @@ export default class UploadPPT extends Component<Props> {
             this.setState({ buttonVal: true });
         } else {
             console.log('File Name does not have White Space')
-            if(file.size > 52428800) {
-                console.log("File Size Limit Exceed (only up to 50MB is allowed)");
-                this.setState({ data: "File Size Limit Exceed (only up to 50MB is allowed)" });
+            if(file.size > 104857600) {
+                console.log("File Size Limit Exceed (only up to 100MB is allowed)");
+                this.setState({ data: "File Size Limit Exceed (only up to 100MB is allowed)" });
                 this.setState({ buttonVal: true });
             } else {
                 if(ext == "ppt" || ext == "pptx") {
