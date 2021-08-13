@@ -1,19 +1,18 @@
 // @flow
 
-import type { Dispatch } from 'redux';
+import type { Dispatch } from "redux";
 
-import { translate } from '../../../base/i18n';
-import { IconShareVideo } from '../../../base/icons';
-import { connect } from '../../../base/redux';
+import { translate } from "../../../base/i18n";
+import { IconDeviceDocument } from "../../../base/icons";
+import { connect } from "../../../base/redux";
 import {
     AbstractButton,
-    type AbstractButtonProps
-} from '../../../base/toolbox/components';
-import { toggleSharedVideo } from '../../actions.any';
-import { isSharingStatus } from '../../functions';
+    type AbstractButtonProps,
+} from "../../../base/toolbox/components";
+import { toggleSharedVideo } from "../../actions.any";
+import { isSharingStatus } from "../../functions";
 
 type Props = AbstractButtonProps & {
-
     /**
      * The redux {@code dispatch} function.
      */
@@ -27,18 +26,18 @@ type Props = AbstractButtonProps & {
     /**
      * Whether or not the local participant is sharing a video.
      */
-    _sharingVideo: boolean
+    _sharingVideo: boolean,
 };
 
 /**
  * Implements an {@link AbstractButton} to open the user documentation in a new window.
  */
 class SharedVideoButton extends AbstractButton<Props, *> {
-    accessibilityLabel = 'toolbar.accessibilityLabel.sharedvideo';
-    icon = IconShareVideo;
-    label = 'toolbar.sharedvideo';
-    tooltip = 'toolbar.sharedvideo';
-    toggledLabel = 'toolbar.stopSharedVideo';
+    accessibilityLabel = "toolbar.accessibilityLabel.sharedvideo";
+    icon = IconDeviceDocument;
+    label = "share presentation";
+    tooltip = "share presentation";
+    toggledLabel = "stopSharedPresentation";
 
     /**
      * Handles clicking / pressing the button, and opens a new dialog.
@@ -91,16 +90,13 @@ class SharedVideoButton extends AbstractButton<Props, *> {
  * @returns {Props}
  */
 function _mapStateToProps(state): Object {
-    const {
-        disabled: sharedVideoBtnDisabled,
-        status: sharedVideoStatus
-    } = state['features/shared-video'];
+    const { disabled: sharedVideoBtnDisabled, status: sharedVideoStatus } =
+        state["features/shared-video"];
 
     return {
         _isDisabled: sharedVideoBtnDisabled,
-        _sharingVideo: isSharingStatus(sharedVideoStatus)
+        _sharingVideo: isSharingStatus(sharedVideoStatus),
     };
 }
-
 
 export default translate(connect(_mapStateToProps)(SharedVideoButton));

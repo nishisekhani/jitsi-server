@@ -21,7 +21,6 @@ export default class UploadPPT extends Component<Props> {
     onFileChange = (event) => {
         const file = event.target.files[0];
         const fileName = file.name;
-<<<<<<< HEAD
         const lastDot = fileName.lastIndexOf(".");
         const ext = fileName.substring(lastDot + 1);
         console.log("fileName : " + fileName + " + ext : " + ext);
@@ -42,55 +41,24 @@ export default class UploadPPT extends Component<Props> {
                 this.setState({ buttonVal: true });
             } else {
                 if (ext == "ppt" || ext == "pptx") {
-=======
-        const lastDot = fileName.lastIndexOf('.');
-        const ext = fileName.substring(lastDot + 1);
-        console.log('fileName : ' + fileName + ' + ext : ' + ext);
-        
-        if(fileName.indexOf(' ') >= 1) {
-            console.log('name has white space');
-            this.setState({ data: "File Name Should not contain White Space" });
-            this.setState({ buttonVal: true });
-        } else {
-            console.log('File Name does not have White Space')
-            if(file.size > 104857600) {
-                console.log("File Size Limit Exceed (only up to 100MB is allowed)");
-                this.setState({ data: "File Size Limit Exceed (only up to 100MB is allowed)" });
-                this.setState({ buttonVal: true });
-            } else {
-                if(ext == "ppt" || ext == "pptx") {
->>>>>>> bc38cef8630b731394b7457d18a9d80557cbf7e3
                     this.setState({ data: "" });
                     this.setState({ selectedFile: event.target.files[0] });
                     this.setState({ buttonVal: false });
                 } else {
-<<<<<<< HEAD
                     console.log("not a .ppt or .pptx file");
                     this.setState({ data: "Please Select the Correct File" });
-=======
-                    console.log('not a .ppt or .pptx file');
-                    this.setState({data : "Please Select the Correct File"});
->>>>>>> bc38cef8630b731394b7457d18a9d80557cbf7e3
                     this.setState({ buttonVal: true });
                 }
             }
         }
-<<<<<<< HEAD
     };
-=======
-    }
->>>>>>> bc38cef8630b731394b7457d18a9d80557cbf7e3
 
     //on click of upload button
     onSubmit = () => {
         // object for form data
         const formData = new FormData();
         this.setState({ isLoading: true });
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> bc38cef8630b731394b7457d18a9d80557cbf7e3
         // API request
         const url = "https://sangoshthee.cdac.in/FileUploadService";
 
@@ -109,7 +77,6 @@ export default class UploadPPT extends Component<Props> {
             },
         };
 
-<<<<<<< HEAD
         axios
             .post(url, formData, axiosConfig)
             .then((response) => {
@@ -123,15 +90,6 @@ export default class UploadPPT extends Component<Props> {
                 });
                 console.log(err);
             });
-=======
-        axios.post(url, formData, axiosConfig).then((response) => {
-            this.setState({ data: response.data.msg, isLoading: false }); 
-            console.log(response.data);
-        }).catch((err) => {
-            this.setState( { data: "Error in Uploading Presentation", isLoading: false });
-            console.log(err);
-        });
->>>>>>> bc38cef8630b731394b7457d18a9d80557cbf7e3
     };
 
     render() {
@@ -151,7 +109,6 @@ export default class UploadPPT extends Component<Props> {
                 titleKey="Please Upload Presentation"
                 width="small"
             >
-<<<<<<< HEAD
                 <div
                     style={{
                         padding: "11px",
@@ -166,14 +123,6 @@ export default class UploadPPT extends Component<Props> {
                         className="form-control"
                         onChange={this.onFileChange}
                     />
-=======
-                <div style={{
-                    padding: "11px",
-                    borderRadius: "5px      ",
-                    backgroundColor: "white"
-                }} >
-                    <input type="file" name="sampleFile" accept=".ppt, .pptx" className="form-control" onChange={ this.onFileChange }/>
->>>>>>> bc38cef8630b731394b7457d18a9d80557cbf7e3
                 </div>
                 <div>
                     <br />
