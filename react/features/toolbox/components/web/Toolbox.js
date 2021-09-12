@@ -1512,7 +1512,7 @@ class Toolbox extends Component<Props> {
                 key="startLocalRec"
                 onClick={_LocalRecording}
                 toggled={recStatus}
-                tooltip={t("Start Local Recording")}
+                tooltip={!recStatus ? t("Start Local Recording") : t("Stop Local Recording")}
             />
         );
 
